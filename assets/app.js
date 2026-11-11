@@ -109,7 +109,7 @@ const games=DATA.games||[];
 $('#games-grid').innerHTML=games.map(g=>`<a class="card game-tile" href="${href('games/'+g.slug)}"><img class="media" src="${g.img}" alt="" loading="lazy" style="--r:3/2"><div class="card-body">${g.new||g.ww?`<div class="tags">${g.new?'<span class="tag">NEW</span>':''}${g.ww?'<span class="tag ww">W&amp;W</span>':''}</div>`:''}<div class="row"><h3>${esc(g.name)}</h3><span class="plays"><svg><use href="#p-gamepad"/></svg>${num(g.plays)}</span></div><p>${esc(g.desc)}</p><span class="btn btn-primary btn-sm">${T('게임하기','Play')}</span></div></a>`).join('');
 
 /* Router */
-const STATIC=['about','activities','events','creators','education','games','volunteer','contact','thanks','login','signup','account'];
+const STATIC=['about','activities','events','creators','education','games','volunteer','contact','thanks','login','signup','account','privacy','terms'];
 function show(name,title){$$('.page').forEach(p=>p.hidden=p.dataset.page!==name);document.title=title||$(`.page[data-page="${name}"]`).dataset.title}
 let current=null,keepScroll=false;
 if(inFrame){try{const k=sessionStorage.getItem('nc-lang-path');if(k!==null){current=k;sessionStorage.removeItem('nc-lang-path')}}catch(e){}}
@@ -210,6 +210,16 @@ document.addEventListener('keydown',e=>{
 function setFs(n){const r=document.documentElement;r.classList.remove('fs-1','fs-2');if(n>0)r.classList.add('fs-'+n);$$('.fs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.fs==n));try{localStorage.setItem('nc-fs',n)}catch(e){}}
 $$('.fs button').forEach(b=>b.addEventListener('click',()=>setFs(+b.dataset.fs)));
 try{const s=localStorage.getItem('nc-fs');if(s)setFs(+s)}catch(e){}
+const darkMQ=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
+const isDark=()=>{const t=document.documentElement.getAttribute('data-theme');return t?t==='dark':!!(darkMQ&&darkMQ.matches)};
+function paintTheme(){const d=isDark();document.documentElement.classList.toggle('is-dark',d);
+ $$('[data-theme-toggle]').forEach(b=>{const l=d?T('밝은 화면으로 바꾸기','Switch to light mode'):T('어두운 화면으로 바꾸기','Switch to dark mode');b.setAttribute('aria-label',l);b.title=l});
+ $$('[data-theme-set]').forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.themeSet==='dark')===d)))}
+function setTheme(t){document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('nc-theme',t)}catch(e){}paintTheme()}
+$$('[data-theme-toggle]').forEach(b=>b.addEventListener('click',()=>setTheme(isDark()?'light':'dark')));
+$$('[data-theme-set]').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.themeSet)));
+if(darkMQ){try{darkMQ.addEventListener('change',paintTheme)}catch(e){}}
+paintTheme();
 
 /* Forms → FormSubmit */
 $$('form[data-fs]').forEach(f=>f.addEventListener('submit',e=>{

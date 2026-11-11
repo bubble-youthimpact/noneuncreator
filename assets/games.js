@@ -712,7 +712,7 @@
   const GAMES = {
     'word-completion': { note: KO_ONLY, howto: [T('빈칸에 들어갈 글자를 순서대로 눌러 단어를 완성하세요.', 'Tap the letters in order to fill the blanks and complete the word.'), T('첫 문제는 연습 문제예요. 틀리면 다시 고를 수 있어요.', "The first one is for practice. If you get it wrong, just try again.")],
       run: r => slotQuiz(r, { make: () => WORDS.map(w => ({ ...w, ans: [...w.ans] })) }) },
-    'memory': { howto: [T('16장의 카드가 뒤집힌 채로 시작합니다.', 'All 16 cards start face down.'), T('한 번에 카드 2장을 뒤집을 수 있습니다.', 'Flip two cards at a time.'), T('같은 그림이면 열린 채로 남고, 다르면 다시 뒤집힙니다.', 'Matching pictures stay face up; others flip back.'), T('카드의 위치를 기억하며 모든 짝을 찾아보세요.', 'Remember where each card is and find every pair.')], run: memory },
+    'memory': { howto: [T('14장의 카드가 뒤집힌 채로 시작합니다.', 'All 14 cards start face down.'), T('한 번에 카드 2장을 뒤집을 수 있습니다.', 'Flip two cards at a time.'), T('같은 그림이면 열린 채로 남고, 다르면 다시 뒤집힙니다.', 'Matching pictures stay face up; others flip back.'), T('카드의 위치를 기억하며 모든 짝을 찾아보세요.', 'Remember where each card is and find every pair.')], run: memory },
     'vocabulary': { howto: [T('제시된 영어 단어와 뜻이 가장 비슷한 단어를 고르세요.', 'Choose the word closest in meaning to the word shown.')],
       run: r => mcQuiz(r, { data: VOCAB, shuffle: true, letters: true }) },
     'picture-quiz': { howto: [T('그림을 보고 무엇인지 입력한 뒤 확인을 누르세요.', 'Look at the picture, type what it is and press Check.'), T('한글이나 영어 중 편한 말로 써도 됩니다.', 'You can answer in Korean or English.')], run: pictureQuiz },

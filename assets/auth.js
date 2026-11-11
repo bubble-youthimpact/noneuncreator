@@ -53,7 +53,7 @@ async function loadProfile(u) {
   try { const snap = await F.getDoc(F.doc(db, 'users', u.uid)); p = snap.exists() ? snap.data() : null; store = 'fs'; }
   catch (e) { store = 'local'; try { p = JSON.parse(localStorage.getItem(lsKey(u.uid)) || 'null'); } catch (_) {} }
   if (!p) {
-    p = { name: (pending && pending.name) || u.displayName || '', email: u.email || '', newsletter: !!(pending && pending.newsletter), completed: [], quizPassed: [], last: null, lang: NC.LANG, createdAt: Date.now() };
+    p = { name: (pending && pending.name) || u.displayName || '', email: u.email || '', newsletter: !!(pending && pending.newsletter), completed: [], quizPassed: [], last: null, lang: NC.LANG, createdAt: Date.now(), termsAgreedAt: Date.now() };
     profile = p; await saveProfile(p, u);
   }
   p.completed = Array.isArray(p.completed) ? p.completed : [];
@@ -146,6 +146,7 @@ function bindStatic() {
   $('#login-form').addEventListener('submit', onLogin);
   $('#reset-form').addEventListener('submit', onReset);
   $('#signup-form').addEventListener('submit', onSignup);
+  { const ag = $('#su-agree'); if (ag) ag.addEventListener('change', () => { if (ag.checked) { ag.closest('.agree').classList.remove('need'); clearMsg(ag.closest('.auth-card')); } }); }
   $('#ac-logout').addEventListener('click', async () => { await A.signOut(auth); toast(T('로그아웃되었습니다.', 'You have been logged out.')); go(''); });
   $('#f-name').addEventListener('submit', onName);
   $('#f-news').addEventListener('submit', async e => { e.preventDefault(); const b = $('button[type=submit]', e.target); busy(b, true); await saveProfile({ newsletter: $('#ac-news').checked }); busy(b, false); inline(e.target, T('저장했습니다.', 'Saved.')); });
@@ -168,8 +169,15 @@ function bindStatic() {
 
 function needReady(box) { if (disabled) { showMsg(box, disabled); return false; } if (!auth) { showMsg(box, T('잠시 후 다시 시도해 주세요.', 'Please try again in a moment.')); return false; } return true; }
 
+function agreed(card) {
+  const box = $('#su-agree', card); if (!box) return true;
+  const lab = box.closest('.agree'); lab.classList.toggle('need', !box.checked);
+  if (!box.checked) { showMsg(card, T('이용약관과 개인정보처리방침에 동의해 주세요.', 'Please agree to the Terms of Service and Privacy Policy.')); box.focus(); }
+  return box.checked;
+}
 async function googleSignIn(btn) {
   const card = btn.closest('.auth-card'); clearMsg(card);
+  if (!agreed(card)) return;
   if (!needReady(card)) return;
   const p = new A.GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' });
   busy(btn, true);
@@ -203,6 +211,7 @@ async function onReset(e) {
 async function onSignup(e) {
   e.preventDefault(); const f = e.target; clearMsg(f);
   const name = $('#su-name').value.trim(), email = $('#su-email').value.trim(), pw = $('#su-pw').value, pw2 = $('#su-pw2').value, newsletter = $('#su-news').checked;
+  if (!agreed(f.closest('.auth-card'))) return;
   if (!name) return showMsg(f, T('이름을 입력해 주세요.', 'Please enter your name.'));
   if (!isEmail(email)) return showMsg(f, T('이메일을 정확히 입력해 주세요.', 'Please enter a valid email address.'));
   if (pw.length < 6) return showMsg(f, T('비밀번호는 6자 이상이어야 합니다.', 'Your password must be at least 6 characters.'));
