@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="hdr-top">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script>try{var t=localStorage.getItem('nc-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>try{var r=document.documentElement,t=localStorage.getItem('nc-theme'),f=localStorage.getItem('nc-fs');if(t==='dark'||t==='light')r.setAttribute('data-theme',t);if(f==='1'||f==='2')r.classList.add('fs-'+f)}catch(e){}</script>
 <base href="../../../../">
 <title>Interacting On YouTube · Noneun Creator</title>
 <meta name="description" content="Guide to Becoming a YouTuber · Lesson 8 of 9">
@@ -30,6 +30,9 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
+<link rel="preload" href="assets/fonts/manrope-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/manrope-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/manrope-800.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
@@ -129,7 +132,7 @@
 <main id="main" tabindex="-1">
 
 <!-- HOME -->
-<div class="page" data-page="home" data-title="Noneun Creator">
+<div class="page" data-page="home" data-title="Noneun Creator" hidden>
   <section class="hero">
     <div class="wrap hero-inner">
       <img class="hero-faces" src="images/logo-faces-white.webp" alt="" width="446" height="313">
@@ -371,7 +374,7 @@
     </div>
   </section>
 </div>
-<div class="page" data-page="lesson" hidden>
+<div class="page" data-page="lesson">
   <section class="section" style="padding-top:44px">
     <div class="wrap narrow">
       <div class="lesson-head"><a class="back" id="le-back" href="#"><svg class="i"><use href="#i-left"/></svg> <span id="le-course"></span></a><span class="muted" id="le-step" style="font-weight:700"></span></div>
