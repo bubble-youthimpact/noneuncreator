@@ -53,10 +53,11 @@ async function loadProfile(u) {
   try { const snap = await F.getDoc(F.doc(db, 'users', u.uid)); p = snap.exists() ? snap.data() : null; store = 'fs'; }
   catch (e) { store = 'local'; try { p = JSON.parse(localStorage.getItem(lsKey(u.uid)) || 'null'); } catch (_) {} }
   if (!p) {
-    p = { name: (pending && pending.name) || u.displayName || '', email: u.email || '', newsletter: !!(pending && pending.newsletter), completed: [], last: null, lang: NC.LANG, createdAt: Date.now() };
+    p = { name: (pending && pending.name) || u.displayName || '', email: u.email || '', newsletter: !!(pending && pending.newsletter), completed: [], quizPassed: [], last: null, lang: NC.LANG, createdAt: Date.now() };
     profile = p; await saveProfile(p, u);
   }
   p.completed = Array.isArray(p.completed) ? p.completed : [];
+  p.quizPassed = Array.isArray(p.quizPassed) ? p.quizPassed : [];
   return p;
 }
 async function saveProfile(patch, u = user) {
@@ -146,13 +147,12 @@ function bindStatic() {
   $('#reset-form').addEventListener('submit', onReset);
   $('#signup-form').addEventListener('submit', onSignup);
   $('#ac-logout').addEventListener('click', async () => { await A.signOut(auth); toast(T('로그아웃되었습니다.', 'You have been logged out.')); go(''); });
-  $('#ac-verify-btn').addEventListener('click', async e => { const f = $('#ac-verify'); try { await A.sendEmailVerification(user); inline(f, T('인증 메일을 보냈습니다.', 'Verification email sent.')); } catch (err) { inline(f, errMsg(err)); } });
   $('#f-name').addEventListener('submit', onName);
   $('#f-news').addEventListener('submit', async e => { e.preventDefault(); const b = $('button[type=submit]', e.target); busy(b, true); await saveProfile({ newsletter: $('#ac-news').checked }); busy(b, false); inline(e.target, T('저장했습니다.', 'Saved.')); });
   $('#f-pw').addEventListener('submit', onPassword);
   $('#ac-reset').addEventListener('click', () => { $('#ac-reset-box').hidden = false; $('#ac-reset-yes').focus(); });
   $('#ac-reset-no').addEventListener('click', () => { $('#ac-reset-box').hidden = true; });
-  $('#ac-reset-yes').addEventListener('click', async e => { busy(e.currentTarget, true); await saveProfile({ completed: [], last: null }); busy(e.currentTarget, false); $('#ac-reset-box').hidden = true; renderAccount(); toast(T('학습 기록을 초기화했습니다.', 'Your learning progress has been reset.')); });
+  $('#ac-reset-yes').addEventListener('click', async e => { busy(e.currentTarget, true); await saveProfile({ completed: [], quizPassed: [], last: null }); busy(e.currentTarget, false); $('#ac-reset-box').hidden = true; renderAccount(); toast(T('학습 기록을 초기화했습니다.', 'Your learning progress has been reset.')); });
   $('#ac-del').addEventListener('click', () => { const f = $('#ac-del-form'); f.hidden = false; clearMsg(f); $('#ac-del-word').focus(); });
   $('#ac-del-no').addEventListener('click', () => { $('#ac-del-form').hidden = true; });
   $('#ac-del-form').addEventListener('submit', onDelete);
@@ -213,9 +213,8 @@ async function onSignup(e) {
   try {
     const cred = await A.createUserWithEmailAndPassword(auth, email, pw);
     await A.updateProfile(cred.user, { displayName: name });
-    A.sendEmailVerification(cred.user).catch(() => {});
     if (user) { await saveProfile({ name, newsletter, email }); paintHeader(); }
-    toast(T('가입을 환영합니다! 인증 메일을 확인해 주세요.', 'Welcome! Please check your email to verify your account.'));
+    toast(T('가입을 환영합니다!', 'Welcome to Noneun Creator!'));
   } catch (err) { pending = null; showMsg(f, errMsg(err)); }
   busy(b, false);
 }
@@ -224,8 +223,13 @@ async function onSignup(e) {
 const providers = () => (user ? user.providerData.map(p => p.providerId) : []);
 function fmtDate(t) { const d = new Date(t); return isNaN(d) ? '' : d.toLocaleDateString(NC.EN ? 'en-US' : 'ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }); }
 function progressRows() {
-  const done = new Set(profile.completed);
-  return NC.courses.map(c => { const n = c.lessons.length; const d = c.lessons.filter((_, i) => done.has(`${c.slug}/${i + 1}`)).length; return { c, n, d }; });
+  const done = new Set(profile.completed), qp = new Set(profile.quizPassed);
+  return NC.courses.map(c => {
+    const n = c.lessons.length, has = i => `${c.slug}/${i + 1}`;
+    const d = c.lessons.filter((_, i) => done.has(has(i))).length;
+    const qn = c.lessons.filter(l => l.quiz).length, q = c.lessons.filter((l, i) => l.quiz && qp.has(has(i))).length;
+    return { c, n, d, qn, q };
+  });
 }
 function renderAccount() {
   if (!user || !profile) return;
@@ -239,12 +243,12 @@ function renderAccount() {
   const pv = providers(), hasPw = pv.includes('password'), hasG = pv.includes('google.com');
   const joined = fmtDate(user.metadata && user.metadata.creationTime);
   $('#ac-tags').innerHTML = (hasG ? '<span class="tag">Google</span>' : '') + (hasPw ? `<span class="tag">${T('이메일', 'Email')}</span>` : '') + (joined ? `<span class="tag" style="background:var(--band);color:var(--muted)">${T('가입일', 'Joined')} ${esc(joined)}</span>` : '');
-  $('#ac-verify').hidden = !(hasPw && !user.emailVerified);
   $('#ac-name-in').value = name; $('#ac-news').checked = !!profile.newsletter;
   $('#f-pw').hidden = !hasPw; $('#f-pw-google').hidden = hasPw;
   $('#ac-del-pw-wrap').hidden = !hasPw; $('#ac-del-google').hidden = hasPw;
-  const rows = progressRows(), started = rows.filter(r => r.d > 0);
+  const rows = progressRows(), started = rows.filter(r => r.d > 0 || r.q > 0);
   $('#st-lessons').textContent = rows.reduce((s, r) => s + r.d, 0);
+  $('#st-quiz').textContent = rows.reduce((s, r) => s + r.q, 0);
   $('#st-courses').textContent = started.filter(r => r.d < r.n).length;
   $('#st-done').textContent = started.filter(r => r.d === r.n).length;
   // continue where you left off
@@ -259,9 +263,9 @@ function renderAccount() {
   $('#ac-continue').innerHTML = next
     ? `<a class="continue" href="${href(`education/${next.c.slug}/${next.i + 1}`)}"><span><small>${T('이어서 학습하기', 'Continue learning')} · ${esc(next.c.title)}</small><b>${esc(next.c.lessons[next.i].title)}</b></span><span class="go">${T('계속하기', 'Continue')} ${ic('i-right')}</span></a>`
     : `<div class="empty">${T('아직 학습 기록이 없어요. 교육자료에서 첫 강의를 시작해 보세요.', "You haven't started any lessons yet. Pick your first course on the Learn page.")}<div style="margin-top:16px"><a class="btn btn-primary" href="${href('education')}">${T('교육자료 보기', 'Browse courses')} ${ic('i-right')}</a></div></div>`;
-  $('#ac-courses').innerHTML = started.map(({ c, n, d }) => {
+  $('#ac-courses').innerHTML = started.map(({ c, n, d, qn, q }) => {
     const pct = Math.round(d / n * 100);
-    return `<a class="cp-row" href="${href('education/' + c.slug)}"><img src="${c.img}" alt="" loading="lazy"><span><b>${esc(c.title)}</b><span class="progress" aria-hidden="true"><i style="width:${pct}%"></i></span><small>${T(`${n}개 중 ${d}개 강의 완료`, `${d} of ${n} lessons completed`)}</small></span><span class="cp-pct">${pct === 100 ? ic('i-check') : pct + '%'}</span></a>`;
+    return `<a class="cp-row" href="${href('education/' + c.slug)}"><img src="${c.img}" alt="" loading="lazy"><span><b>${esc(c.title)}</b><span class="progress" aria-hidden="true"><i style="width:${pct}%"></i></span><small>${T(`${n}개 중 ${d}개 강의 완료`, `${d} of ${n} lessons completed`)}${qn ? ' · ' + T(`퀴즈 ${qn}개 중 ${q}개 정답`, `${q} of ${qn} quizzes passed`) : ''}</small></span><span class="cp-pct">${pct === 100 ? ic('i-check') : pct + '%'}</span></a>`;
   }).join('');
 }
 async function onName(e) {
@@ -347,7 +351,7 @@ document.addEventListener('click', e => {
 }, true);
 
 function demoFirebase() {
-  const KEY = 'nc-demo-v1', mem = {};
+  const KEY = 'nc-demo-v2', mem = {};
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return mem.st || null; } };
   const save = () => { mem.st = st; try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
   const range = (c, a, b) => Array.from({ length: b - a + 1 }, (_, i) => `${c}/${a + i}`);
@@ -356,6 +360,7 @@ function demoFirebase() {
     users: { [DEMO_EMAIL]: { uid: 'demo', email: DEMO_EMAIL, pw: DEMO_PW, provider: 'password', displayName: T('데모 사용자', 'Demo User'), emailVerified: false, photoURL: null, created: '2026-10-01T09:00:00Z' } },
     db: { 'users/demo': { name: T('데모 사용자', 'Demo User'), email: DEMO_EMAIL, newsletter: true, lang: NC.LANG, createdAt: Date.parse('2026-10-01T09:00:00Z'),
       completed: [...range('phone-hobby', 1, 11), ...range('phone-basics', 1, 4), ...range('youtube-guide', 1, 3)],
+      quizPassed: [...range('phone-hobby', 1, 11), ...range('phone-basics', 1, 3), ...range('youtube-guide', 1, 2)],
       last: { course: 'youtube-guide', n: 4, at: Date.now() } } },
   });
   let st = read() || seed(); save();
@@ -393,5 +398,21 @@ function demoFirebase() {
   };
   return { A, F, hasDemo: () => !!st.users[DEMO_EMAIL], reseed: () => { const c = st.cur; st = seed(); st.cur = c; save(); } };
 }
+
+/* Quiz: a correct answer counts the lesson as completed and is saved to the profile */
+document.addEventListener('nc:quiz', async e => {
+  const { key, correct } = e.detail, msg = $('.quiz-msg');
+  if (!user || !profile) {
+    if (!disabled && msg) msg.insertAdjacentHTML('beforeend', ` <span style="color:var(--muted);font-weight:500">${T('로그인하면 결과가 내 정보에 저장돼요.', 'Log in to save your results.')}</span>`);
+    return;
+  }
+  if (!correct) return;
+  const qp = new Set(profile.quizPassed), done = new Set(profile.completed);
+  const isNew = !qp.has(key) || !done.has(key);
+  qp.add(key); done.add(key);
+  await saveProfile({ quizPassed: [...qp], completed: [...done] });
+  const [s, n] = key.split('/'); renderLessonDone(s, +n);
+  if (isNew && msg) msg.insertAdjacentHTML('beforeend', ` <span style="font-weight:500">${T('학습 완료로 기록했어요.', 'Saved to your progress.')}</span>`);
+});
 
 init();

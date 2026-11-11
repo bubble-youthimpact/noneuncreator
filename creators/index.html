@@ -47,6 +47,7 @@
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
   <!-- Phosphor Icons (MIT) -->
+  <symbol id="p-gamepad" viewBox="0 0 256 256"><path d="M176,112H152a8,8,0,0,1,0-16h24a8,8,0,0,1,0,16ZM104,96H96V88a8,8,0,0,0-16,0v8H72a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0v-8h8a8,8,0,0,0,0-16ZM241.48,200.65a36,36,0,0,1-54.94,4.81c-.12-.12-.24-.24-.35-.37L146.48,160h-37L69.81,205.09l-.35.37A36.08,36.08,0,0,1,44,216,36,36,0,0,1,8.56,173.75a.68.68,0,0,1,0-.14L24.93,89.52A59.88,59.88,0,0,1,83.89,40H172a60.08,60.08,0,0,1,59,49.25c0,.06,0,.12,0,.18l16.37,84.17a.68.68,0,0,1,0,.14A35.74,35.74,0,0,1,241.48,200.65ZM172,144a44,44,0,0,0,0-88H83.89A43.9,43.9,0,0,0,40.68,92.37l0,.13L24.3,176.59A20,20,0,0,0,58,194.3l41.92-47.59a8,8,0,0,1,6-2.71Zm59.7,32.59-8.74-45A60,60,0,0,1,172,160h-4.2L198,194.31a20.09,20.09,0,0,0,17.46,5.39,20,20,0,0,0,16.23-23.11Z" fill="currentColor" stroke="none"/></symbol>
   <symbol id="p-user" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24ZM74.08,197.5a64,64,0,0,1,107.84,0,87.83,87.83,0,0,1-107.84,0ZM96,120a32,32,0,1,1,32,32A32,32,0,0,1,96,120Zm97.76,66.41a79.66,79.66,0,0,0-36.06-28.75,48,48,0,1,0-59.4,0,79.66,79.66,0,0,0-36.06,28.75,88,88,0,1,1,131.52,0Z" fill="currentColor" stroke="none"/></symbol>
   <symbol id="p-signout" viewBox="0 0 256 256"><path d="M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40a8,8,0,0,0-11.32,11.32L204.69,120H112a8,8,0,0,0,0,16h92.69l-26.35,26.34a8,8,0,0,0,11.32,11.32l40-40A8,8,0,0,0,229.66,122.34Z" fill="currentColor" stroke="none"/></symbol>
   <symbol id="p-trash" viewBox="0 0 256 256"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z" fill="currentColor" stroke="none"/></symbol>
@@ -148,8 +149,20 @@
       </div>
     </div>
   </section>
-
   <section class="section alt">
+    <div class="wrap split flip ww-start">
+      <img class="media ww-img" src="images/wander-wonder.webp" alt="이젤 앞에서 그림을 그리는 시니어 두 사람" width="768" height="512" loading="lazy">
+      <div>
+        <span class="eyebrow">WANDER &amp; WONDER</span>
+        <h2>어디서부터 시작해야 할지 모르겠나요?</h2>
+        <p>새로운 플랫폼 Wander &amp; Wonder에 함께하세요! 직접 무언가를 만들고, 그 작품을 다른 사람들과 나눌 수 있는 길을 열어 드립니다.</p>
+        <p>물론 많은 분들이 무엇부터 만들어야 할지 막막해하십니다. Wander &amp; Wonder는 여러 나라와 장소, 예술 작품으로 여러분을 안내하며, 배우고 생각을 넓히는 과정에서 만들고 싶은 것에 대한 영감을 찾도록 도와드립니다.</p>
+        <a class="btn btn-primary" href="https://wander-wonder.base44.app/" target="_blank" rel="noopener">지금 방문하기 <svg class="i"><use href="#i-right"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
     <div class="wrap">
       <div class="sec-head"><div><h2>통계</h2><p>시니어와 미디어, 숫자로 살펴보기</p></div></div>
       <div class="stats" id="stats">
@@ -160,7 +173,7 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section alt">
     <div class="wrap">
       <div class="sec-head"><div><h2>시니어 크리에이터</h2><p>자신만의 이야기로 세상과 만나는 분들</p></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-ghost btn-sm" href="creators/">전체 보기 <svg class="i"><use href="#i-right"/></svg></a></div></div>
@@ -170,21 +183,21 @@
     </div>
   </section>
 
-  <section class="section alt">
+  <section class="section">
     <div class="wrap">
       <div class="sec-head"><div><h2>추천 포스트</h2><p>현장에서 함께한 순간들</p></div><a class="btn btn-ghost btn-sm" href="activities/">더 보기 <svg class="i"><use href="#i-right"/></svg></a></div>
       <div class="grid g4 keep2" id="home-posts"></div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section alt">
     <div class="wrap">
       <div class="sec-head"><div><h2>추천 교육자료</h2><p>처음이어도 천천히 따라 할 수 있어요</p></div><a class="btn btn-ghost btn-sm" href="education/">더 보기 <svg class="i"><use href="#i-right"/></svg></a></div>
       <div class="grid g4" id="home-courses"></div>
     </div>
   </section>
 
-  <section class="section alt">
+  <section class="section">
     <div class="wrap narrow">
       <div class="sec-head"><div><h2>자주 묻는 질문</h2><p>질문을 누르면 답이 펼쳐집니다.</p></div></div>
       <div class="faq" id="faq"></div>
@@ -371,20 +384,24 @@
 
 <!-- GAMES -->
 <div class="page" data-page="games" data-title="게임 · 노는창작자" hidden>
-  <section class="page-head"><div class="wrap"><h1>게임</h1><p>단어, 기억력, 짝 맞추기로 즐겁게 두뇌 운동을 해보세요.</p></div></section>
+  <section class="page-head"><div class="wrap"><h1>게임</h1><p>단어, 기억력, 상식 퀴즈로 즐겁게 두뇌 운동을 해보세요.</p></div></section>
   <section class="section">
     <div class="wrap">
-      <div class="game-cards">
-        <div class="game-card"><span class="gi"><svg class="i"><use href="#i-cards"/></svg></span><h3>짝 맞추기</h3><p>같은 낱말 카드 두 장을 찾아보세요.</p><span class="tag" style="justify-self:start">아래에서 바로 하기</span></div>
-        <div class="game-card"><span class="gi"><svg class="i"><use href="#i-text"/></svg></span><h3>단어 게임</h3><p>주어진 글자로 낱말을 만들어 보세요.</p><span class="tag" style="justify-self:start">준비 중</span></div>
-        <div class="game-card"><span class="gi"><svg class="i"><use href="#i-brain"/></svg></span><h3>기억력 게임</h3><p>순서를 기억하고 똑같이 따라 해보세요.</p><span class="tag" style="justify-self:start">준비 중</span></div>
-      </div>
-      <div class="board-wrap">
-        <div class="board-top"><div><h2>전래동화 짝 맞추기</h2><p class="muted">카드를 눌러 뒤집고, 같은 낱말 두 장을 찾으세요.</p></div>
-          <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><span class="score" id="game-score" aria-live="polite"></span><button class="btn btn-ghost btn-sm" type="button" id="game-reset">다시 하기</button></div></div>
-        <div class="board" id="board"></div>
-        <p class="center" id="game-done" hidden style="margin-top:22px;font-weight:800;font-size:1.15rem;color:var(--ok)">모두 찾았어요! 훌륭합니다.</p>
-      </div>
+      <div class="grid g3" id="games-grid"></div>
+      <p class="center muted ww-note">"W&amp;W" 라벨이 붙은 게임은 여러분의 창의력을 마음껏 펼칠 수 있도록 돕는 새로운 웹사이트,</p>
+      <p class="center muted"><a href="https://wander-wonder.base44.app/" target="_blank" rel="noopener" style="color:var(--blue-text);font-weight:700">Wander &amp; Wonder</a>와 함께하는 게임입니다.</p>
+    </div>
+  </section>
+</div>
+
+<!-- GAME -->
+<div class="page" data-page="game" hidden>
+  <section class="page-head"><div class="wrap"><a class="back crumb" href="games/"><svg class="i"><use href="#i-left"/></svg> 게임 목록</a><h1 id="gm-title"></h1><p id="gm-desc"></p><div class="kicker" id="gm-plays"></div></div></section>
+  <section class="section">
+    <div class="wrap g-wrap">
+      <p class="g-note" id="gm-note" hidden></p>
+      <ol class="g-howto" id="gm-howto"></ol>
+      <div id="game-root"></div>
     </div>
   </section>
 </div>
@@ -508,11 +525,11 @@
           <div class="acct-id"><h2 id="ac-name"></h2><p class="muted" id="ac-email"></p><div class="tags" id="ac-tags"></div></div>
           <button class="btn btn-ghost" type="button" id="ac-logout"><svg class="i"><use href="#p-signout"/></svg> 로그아웃</button>
         </div>
-        <div class="info" id="ac-verify" hidden><h3>이메일 인증이 필요해요</h3><p>가입한 이메일로 보낸 인증 링크를 눌러 주세요. 메일이 없다면 스팸함도 확인해 주세요.</p><div class="form-actions" style="margin-top:14px"><button class="btn btn-ghost btn-sm" type="button" id="ac-verify-btn">인증 메일 다시 보내기</button><span class="form-msg" role="status"></span></div></div>
 
         <h2 class="acct-h">학습 현황</h2>
         <div class="stats acct-stats">
           <div class="stat"><b id="st-lessons">0</b><p>완료한 강의</p></div>
+          <div class="stat"><b id="st-quiz">0</b><p>맞힌 퀴즈</p></div>
           <div class="stat"><b id="st-courses">0</b><p>수강 중인 강좌</p></div>
           <div class="stat"><b id="st-done">0</b><p>완료한 강좌</p></div>
         </div>
@@ -594,6 +611,7 @@
 <script>window.SITE={lang:"ko"};</script>
 <script src="assets/firebase-config.js"></script>
 <script src="assets/data-ko.js"></script>
+<script src="assets/games.js"></script>
 <script src="assets/app.js"></script>
 <script type="module" src="assets/auth.js"></script>
 </body>

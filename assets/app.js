@@ -104,23 +104,15 @@ $('#event-list').innerHTML=events.map(e=>`<article class="event"><a href="${href
 $$('[data-yt]').forEach(a=>a.addEventListener('click',e=>{if(inFrame)return;e.preventDefault();e.stopPropagation();
  a.outerHTML=`<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${a.dataset.yt}?autoplay=1&rel=0" title="${T('우리도 예술가! 노는 창작자들의 그림 인터뷰',"We're artists too! Interviews with Noneun Creator painters")}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>`}));
 
-/* Game */
-const words=EN?['Tiger','Persimmon','Rice cake','Sun','Moon','Goblin']:['호랑이','곶감','떡','해님','달님','도깨비'];
-let open=[],tries=0,found=0,lock=false;
-function newGame(){const d=[...words,...words].sort(()=>Math.random()-.5);open=[];tries=0;found=0;lock=false;$('#game-done').hidden=true;
- $('#board').innerHTML=d.map((w,i)=>`<button class="tile" type="button" data-w="${w}" aria-label="${T('카드','Card')} ${i+1}"><span class="q">?</span></button>`).join('');score()}
-function score(){$('#game-score').textContent=T(`시도 ${tries}회 · ${found}/6쌍`,`Tries: ${tries} · Pairs: ${found}/6`)}
-$('#board').addEventListener('click',e=>{const t=e.target.closest('.tile');if(!t||lock||t.dataset.open==='true'||t.dataset.done==='true')return;
- t.dataset.open='true';t.textContent=t.dataset.w;open.push(t);
- if(open.length===2){tries++;const[a,b]=open;
-  if(a.dataset.w===b.dataset.w){a.dataset.done=b.dataset.done='true';open=[];found++;if(found===6)$('#game-done').hidden=false}
-  else{lock=true;setTimeout(()=>{[a,b].forEach(x=>{x.dataset.open='false';x.innerHTML='<span class="q">?</span>'});open=[];lock=false},1000)}score()}});
-$('#game-reset').addEventListener('click',newGame);newGame();
+/* Games list */
+const games=DATA.games||[];
+$('#games-grid').innerHTML=games.map(g=>`<a class="card game-tile" href="${href('games/'+g.slug)}"><img class="media" src="${g.img}" alt="" loading="lazy" style="--r:3/2"><div class="card-body">${g.new||g.ww?`<div class="tags">${g.new?'<span class="tag">NEW</span>':''}${g.ww?'<span class="tag ww">W&amp;W</span>':''}</div>`:''}<div class="row"><h3>${esc(g.name)}</h3><span class="plays"><svg><use href="#p-gamepad"/></svg>${num(g.plays)}</span></div><p>${esc(g.desc)}</p><span class="btn btn-primary btn-sm">${T('게임하기','Play')}</span></div></a>`).join('');
 
 /* Router */
 const STATIC=['about','activities','events','creators','education','games','volunteer','contact','thanks','login','signup','account'];
 function show(name,title){$$('.page').forEach(p=>p.hidden=p.dataset.page!==name);document.title=title||$(`.page[data-page="${name}"]`).dataset.title}
 let current=null,keepScroll=false;
+if(inFrame){try{const k=sessionStorage.getItem('nc-lang-path');if(k!==null){current=k;sessionStorage.removeItem('nc-lang-path')}}catch(e){}}
 function go(p){if(inFrame)current=p;else{try{history.pushState(null,'',href(p))}catch(e){current=p}}route()}
 function route(){
  const path=current!==null?current:curPath();current=null;
@@ -157,10 +149,19 @@ function route(){
   $('#le-slides').innerHTML=l.slides.length?l.slides.map((s,i)=>`<img src="${s}" alt="${esc(l.title)} ${T('슬라이드','slide')} ${i+1}" loading="${i<2?'eager':'lazy'}">`).join(''):`<p class="empty">${T('자료를 준비하고 있습니다.','This material is being prepared.')}</p>`;
   $('#le-quiz').innerHTML=l.quiz?`<div class="quiz"><h2>${T('확인 퀴즈','Quick quiz')}</h2><p class="q">${esc(l.quiz.q)}</p><div class="ox"><button type="button" class="o" data-v="true" aria-label="${T('맞다','True')}">O</button><button type="button" class="x" data-v="false" aria-label="${T('틀리다','False')}">X</button></div><p class="quiz-msg" aria-live="polite"></p></div>`:'';
   if(l.quiz)$$('.ox button').forEach(b=>b.addEventListener('click',()=>{const right=(b.dataset.v==='true')===l.quiz.a;$$('.ox button').forEach(x=>x.removeAttribute('data-state'));b.dataset.state=right?'right':'wrong';
-   const msg=$('.quiz-msg');msg.textContent=right?T('정답입니다! 잘하셨어요.','Correct! Well done.'):T(`아쉬워요. 정답은 ${l.quiz.a?'O':'X'} 입니다.`,`Not quite. The answer is ${l.quiz.a?'O (true)':'X (false)'}.`);msg.style.color=right?'var(--ok)':'var(--bad)'}));
+   const msg=$('.quiz-msg');msg.textContent=right?T('정답입니다! 잘하셨어요.','Correct! Well done.'):T(`아쉬워요. 정답은 ${l.quiz.a?'O':'X'} 입니다.`,`Not quite. The answer is ${l.quiz.a?'O (true)':'X (false)'}.`);msg.style.color=right?'var(--ok)':'var(--bad)';
+   document.dispatchEvent(new CustomEvent('nc:quiz',{detail:{key:`${c.slug}/${n}`,correct:right}}))}));
   const prev=$('#le-prev'),next=$('#le-next');prev.hidden=n===1;prev.href=href(`education/${c.slug}/${n-1}`);
   if(n===L.length){next.href=href('education/'+c.slug);next.innerHTML=T('강의 완료 ','Finish course ')+ic('check')}else{next.href=href(`education/${c.slug}/${n+1}`);next.innerHTML=T('다음 ','Next ')+ic('right')}
   show('lesson',`${l.title} · ${BRAND}`);
+ }else if(seg[0]==='games'&&seg.length===2&&(c=games.find(x=>x.slug===seg[1]))&&window.NCGames){
+  const info=NCGames.info(c.slug)||{};
+  $('#gm-title').textContent=c.name;$('#gm-desc').textContent=c.desc;
+  $('#gm-plays').innerHTML=`<svg style="width:22px;height:22px;fill:currentColor"><use href="#p-gamepad"/></svg><span>${T('플레이','Plays')} ${num(c.plays)}</span>`;
+  $('#gm-note').textContent=info.note||'';$('#gm-note').hidden=!info.note;
+  $('#gm-howto').innerHTML=(info.howto||[]).map(x=>`<li>${esc(x)}</li>`).join('');$('#gm-howto').hidden=!(info.howto||[]).length;
+  NCGames.mount(c.slug,$('#game-root'));
+  show('game',`${c.name} · ${BRAND}`);nav='games';
  }else if(seg.length===1&&STATIC.includes(seg[0])){show(seg[0])}
  else{show('notfound');nav='-'}
  $$('.main-nav a,.drawer-nav a').forEach(a=>a.getAttribute('href')===href(nav)?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
@@ -177,7 +178,7 @@ window.addEventListener('popstate',route);
 document.addEventListener('click',e=>{
  if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
  const a=e.target.closest('a[href]');if(!a||a.target||a.hasAttribute('download'))return;
- if(a.hasAttribute('data-lang-link')){if(inFrame){e.preventDefault();location.href=EN?SITE.koPreview||'../':SITE.enPreview||'en/'}return}
+ if(a.hasAttribute('data-lang-link')){if(inFrame){e.preventDefault();try{sessionStorage.setItem('nc-lang-path',(window.NC.last&&window.NC.last.path)||'')}catch(x){}location.href=EN?SITE.koPreview||'../':SITE.enPreview||'en/'}return}
  const raw=a.getAttribute('href');if(raw.startsWith('#'))return;
  const u=new URL(a.href,location.href);if(u.origin!==location.origin&&!inFrame)return;
  if(/^(mailto|tel|https?):/i.test(raw)&&u.origin!==location.origin)return;
