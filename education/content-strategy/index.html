@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="hdr-top">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script>try{var t=localStorage.getItem('nc-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>try{var r=document.documentElement,t=localStorage.getItem('nc-theme'),f=localStorage.getItem('nc-fs');if(t==='dark'||t==='light')r.setAttribute('data-theme',t);if(f==='1'||f==='2')r.classList.add('fs-'+f)}catch(e){}</script>
 <base href="../../">
 <title>콘텐츠 전략 · 노는창작자</title>
 <meta name="description" content="유튜브 채널에 맞는 콘텐츠 주제를 선택하고 방향성을 정하는 방법을 배워보세요.">
@@ -129,7 +129,7 @@
 <main id="main" tabindex="-1">
 
 <!-- HOME -->
-<div class="page" data-page="home" data-title="노는창작자 Noneun Creator">
+<div class="page" data-page="home" data-title="노는창작자 Noneun Creator" hidden>
   <section class="hero">
     <div class="wrap hero-inner">
       <img class="hero-faces" src="images/logo-faces-white.webp" alt="" width="446" height="313">
@@ -354,7 +354,7 @@
     </div>
   </section>
 </div>
-<div class="page" data-page="course" hidden>
+<div class="page" data-page="course">
   <section class="section" style="padding-top:48px">
     <div class="wrap">
       <a class="back" href="education/"><svg class="i"><use href="#i-left"/></svg> 교육자료 목록</a>

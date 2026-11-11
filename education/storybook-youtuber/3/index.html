@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="hdr-top">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script>try{var t=localStorage.getItem('nc-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>try{var r=document.documentElement,t=localStorage.getItem('nc-theme'),f=localStorage.getItem('nc-fs');if(t==='dark'||t==='light')r.setAttribute('data-theme',t);if(f==='1'||f==='2')r.classList.add('fs-'+f)}catch(e){}</script>
 <base href="../../../">
 <title>노老는창작자 3강: 발성 방법 입문 · 노는창작자</title>
 <meta name="description" content="시니어를 위한 초간단 동화책 유튜버 되는 방법 · 3/5강">
@@ -129,7 +129,7 @@
 <main id="main" tabindex="-1">
 
 <!-- HOME -->
-<div class="page" data-page="home" data-title="노는창작자 Noneun Creator">
+<div class="page" data-page="home" data-title="노는창작자 Noneun Creator" hidden>
   <section class="hero">
     <div class="wrap hero-inner">
       <img class="hero-faces" src="images/logo-faces-white.webp" alt="" width="446" height="313">
@@ -371,7 +371,7 @@
     </div>
   </section>
 </div>
-<div class="page" data-page="lesson" hidden>
+<div class="page" data-page="lesson">
   <section class="section" style="padding-top:44px">
     <div class="wrap narrow">
       <div class="lesson-head"><a class="back" id="le-back" href="#"><svg class="i"><use href="#i-left"/></svg> <span id="le-course"></span></a><span class="muted" id="le-step" style="font-weight:700"></span></div>
