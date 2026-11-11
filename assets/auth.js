@@ -210,7 +210,7 @@ async function onReset(e) {
 }
 async function onSignup(e) {
   e.preventDefault(); const f = e.target; clearMsg(f);
-  const name = $('#su-name').value.trim(), email = $('#su-email').value.trim(), pw = $('#su-pw').value, pw2 = $('#su-pw2').value, newsletter = $('#su-news').checked;
+  const name = $('#su-name').value.trim(), email = $('#su-email').value.trim(), pw = $('#su-pw').value, pw2 = $('#su-pw2').value, newsletter = !!($('#su-news') && $('#su-news').checked);
   if (!agreed(f.closest('.auth-card'))) return;
   if (!name) return showMsg(f, T('이름을 입력해 주세요.', 'Please enter your name.'));
   if (!isEmail(email)) return showMsg(f, T('이메일을 정확히 입력해 주세요.', 'Please enter a valid email address.'));

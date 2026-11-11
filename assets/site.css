@@ -143,8 +143,14 @@ html.hdr-top.hdr-dark .tool-sep{background:rgba(255,255,255,.35)}
 .drawer-social{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .drawer-social .btn{gap:8px}
 .drawer-social svg{width:22px;height:22px}
-@media (max-width:900px){.tools .fs,.tool-sep{display:none}}
-@media (max-width:560px){.tools .socials,.tools .btn{display:none}.lang-btn{padding:0 12px 0 10px}.logo img{height:36px}}
+.logo img{max-width:none;flex:none}
+.header-row>.logo{min-width:max-content}
+.tools{min-width:0}
+/* collapse header tools into the menu early so the logo always keeps its shape */
+@media (max-width:1080px){.tools .fs,.tool-sep,.tools .socials{display:none}}
+@media (max-width:760px){.tools .btn{display:none}}
+@media (max-width:520px){.tools .theme-btn{display:none}.tools{gap:8px}.header-row{gap:12px}.lang-btn{padding:0 12px 0 10px}.logo img{height:36px}}
+@media (max-width:370px){.lang-btn span,.menu-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.lang-btn,.menu-btn{padding:0;width:42px;justify-content:center}.logo img{height:32px}}
 
 /* Section scaffolding */
 .page-head{background:var(--band);margin-top:calc(-1 * var(--hh));padding-block:calc(var(--hh) + 64px) 88px;text-align:center}
@@ -439,8 +445,9 @@ a.card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:tr
 .auth-head h1{font-size:clamp(1.8rem,4vw,2.3rem)}
 .auth-head p{margin-top:8px}
 .auth-card{display:grid;gap:18px}
-.agree{padding:14px 16px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--band);color:var(--ink)}
+.check.agree{align-items:center;padding:14px 16px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--band);color:var(--ink)}
 .agree.need{border-color:var(--bad);background:var(--bad-soft)}
+.check.agree input{margin:0}
 .agree a,.auth-legal a{color:var(--blue-text);font-weight:700}
 .req-tag{display:inline-block;font-size:.78rem;font-weight:800;color:var(--blue-text);background:var(--blue-soft);border-radius:6px;padding:1px 7px;margin-right:2px;vertical-align:1px}
 .auth-legal{text-align:center;color:var(--muted);font-size:.9rem;margin-top:16px}
