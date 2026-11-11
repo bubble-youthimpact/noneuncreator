@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="hdr-top">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script>try{var t=localStorage.getItem('nc-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>try{var r=document.documentElement,t=localStorage.getItem('nc-theme'),f=localStorage.getItem('nc-fs');if(t==='dark'||t==='light')r.setAttribute('data-theme',t);if(f==='1'||f==='2')r.classList.add('fs-'+f)}catch(e){}</script>
 <base href="../../">
 <title>그림 퀴즈 게임 · 노는창작자</title>
 <meta name="description" content="화면에 나오는 그림을 보고 정답을 맞춰보세요.">
@@ -129,7 +129,7 @@
 <main id="main" tabindex="-1">
 
 <!-- HOME -->
-<div class="page" data-page="home" data-title="노는창작자 Noneun Creator">
+<div class="page" data-page="home" data-title="노는창작자 Noneun Creator" hidden>
   <section class="hero">
     <div class="wrap hero-inner">
       <img class="hero-faces" src="images/logo-faces-white.webp" alt="" width="446" height="313">
@@ -400,7 +400,7 @@
 </div>
 
 <!-- GAME -->
-<div class="page" data-page="game" hidden>
+<div class="page" data-page="game">
   <section class="page-head"><div class="wrap"><a class="back crumb" href="games/"><svg class="i"><use href="#i-left"/></svg> 게임 목록</a><h1 id="gm-title"></h1><p id="gm-desc"></p><div class="kicker" id="gm-plays"></div></div></section>
   <section class="section">
     <div class="wrap g-wrap">

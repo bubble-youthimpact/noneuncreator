@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="hdr-top">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script>try{var t=localStorage.getItem('nc-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>try{var r=document.documentElement,t=localStorage.getItem('nc-theme'),f=localStorage.getItem('nc-fs');if(t==='dark'||t==='light')r.setAttribute('data-theme',t);if(f==='1'||f==='2')r.classList.add('fs-'+f)}catch(e){}</script>
 <base href="../../">
 <title>즐거운 우리집 (요양원) 2차 방문 · 노는창작자</title>
 <meta name="description" content="경기 용인시 · 2026년 7월 31일 · 사진 27장">
@@ -129,7 +129,7 @@
 <main id="main" tabindex="-1">
 
 <!-- HOME -->
-<div class="page" data-page="home" data-title="노는창작자 Noneun Creator">
+<div class="page" data-page="home" data-title="노는창작자 Noneun Creator" hidden>
   <section class="hero">
     <div class="wrap hero-inner">
       <img class="hero-faces" src="images/logo-faces-white.webp" alt="" width="446" height="313">
@@ -301,7 +301,7 @@
   <section class="page-head"><div class="wrap"><h1>행사</h1><p>요양원 방문, 전시회 등 노는창작자가 함께한 자리</p></div></section>
   <section class="section"><div class="wrap" id="event-list"></div></section>
 </div>
-<div class="page" data-page="event" hidden>
+<div class="page" data-page="event">
   <section class="page-head"><div class="wrap"><a class="back crumb" href="events/"><svg class="i"><use href="#i-left"/></svg> 행사 목록</a><h1 id="ev-title"></h1><p id="ev-meta"></p></div></section>
   <section class="section"><div class="wrap"><p class="lead" id="ev-desc" style="max-width:44em;margin-bottom:28px"></p><p class="muted" id="ev-count" style="margin-bottom:18px"></p><div class="gallery" id="ev-gallery"></div></div></section>
 </div>
