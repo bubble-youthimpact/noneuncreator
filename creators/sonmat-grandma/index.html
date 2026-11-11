@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="hdr-top">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script>try{var t=localStorage.getItem('nc-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>try{var r=document.documentElement,t=localStorage.getItem('nc-theme'),f=localStorage.getItem('nc-fs');if(t==='dark'||t==='light')r.setAttribute('data-theme',t);if(f==='1'||f==='2')r.classList.add('fs-'+f)}catch(e){}</script>
 <base href="../../">
 <title>손맛할머니 · 노는창작자</title>
 <meta name="description" content="시골 할머니의 손맛 가득한 집밥 이야기, 한 숟갈에 담긴 그리움과 정을 전합니다.">
@@ -129,7 +129,7 @@
 <main id="main" tabindex="-1">
 
 <!-- HOME -->
-<div class="page" data-page="home" data-title="노는창작자 Noneun Creator">
+<div class="page" data-page="home" data-title="노는창작자 Noneun Creator" hidden>
   <section class="hero">
     <div class="wrap hero-inner">
       <img class="hero-faces" src="images/logo-faces-white.webp" alt="" width="446" height="313">
@@ -323,7 +323,7 @@
         <p class="form-status" role="status" hidden></p>
       </form></div></section>
 </div>
-<div class="page" data-page="creator" hidden>
+<div class="page" data-page="creator">
   <section class="profile-head">
     <div class="wrap">
       <a class="back" href="creators/"><svg class="i"><use href="#i-left"/></svg> 크리에이터 목록</a>

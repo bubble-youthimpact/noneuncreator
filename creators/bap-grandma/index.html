@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="hdr-top">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script>try{var t=localStorage.getItem('nc-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>try{var r=document.documentElement,t=localStorage.getItem('nc-theme'),f=localStorage.getItem('nc-fs');if(t==='dark'||t==='light')r.setAttribute('data-theme',t);if(f==='1'||f==='2')r.classList.add('fs-'+f)}catch(e){}</script>
 <base href="../../">
 <title>밥할머니 · 노는창작자</title>
 <meta name="description" content="가족들 밥 해주는 게 최고 좋은 할머니입니다. 모두 밥 잘 먹고 다녀요! + 밥할머니 고향은 울산, 사는 곳은 부산입니다. + 촬영 및 채널관리는 밥할머니딸이 합니다. + 레시피와 사용하시는 제품은 설명에 있습니다. + 밥할머니의 사투리를 좋아해서 자막은 사투리로 답니다. +…">
@@ -129,7 +129,7 @@
 <main id="main" tabindex="-1">
 
 <!-- HOME -->
-<div class="page" data-page="home" data-title="노는창작자 Noneun Creator">
+<div class="page" data-page="home" data-title="노는창작자 Noneun Creator" hidden>
   <section class="hero">
     <div class="wrap hero-inner">
       <img class="hero-faces" src="images/logo-faces-white.webp" alt="" width="446" height="313">
@@ -323,7 +323,7 @@
         <p class="form-status" role="status" hidden></p>
       </form></div></section>
 </div>
-<div class="page" data-page="creator" hidden>
+<div class="page" data-page="creator">
   <section class="profile-head">
     <div class="wrap">
       <a class="back" href="creators/"><svg class="i"><use href="#i-left"/></svg> 크리에이터 목록</a>

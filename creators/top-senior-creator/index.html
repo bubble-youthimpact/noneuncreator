@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="hdr-top">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script>try{var t=localStorage.getItem('nc-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>try{var r=document.documentElement,t=localStorage.getItem('nc-theme'),f=localStorage.getItem('nc-fs');if(t==='dark'||t==='light')r.setAttribute('data-theme',t);if(f==='1'||f==='2')r.classList.add('fs-'+f)}catch(e){}</script>
 <base href="../../">
 <title>(최상)시니어크리에이터 · 노는창작자</title>
 <meta name="description" content="최상 시니어크리에이터는 유튜브 크리에이터 1급, 스마트리더십지도사 1급, AI프로젝트지도사 1급 자격을 바탕으로, 배움과 도전을 일상으로 만들어가는 시니어 크리에이터입니다. 이 채널에서는 영상 제작을 배우는 과정, 시니어 동아리 운영 이야기, 그리고 함께 성장하는 순간들이 자…">
@@ -129,7 +129,7 @@
 <main id="main" tabindex="-1">
 
 <!-- HOME -->
-<div class="page" data-page="home" data-title="노는창작자 Noneun Creator">
+<div class="page" data-page="home" data-title="노는창작자 Noneun Creator" hidden>
   <section class="hero">
     <div class="wrap hero-inner">
       <img class="hero-faces" src="images/logo-faces-white.webp" alt="" width="446" height="313">
@@ -323,7 +323,7 @@
         <p class="form-status" role="status" hidden></p>
       </form></div></section>
 </div>
-<div class="page" data-page="creator" hidden>
+<div class="page" data-page="creator">
   <section class="profile-head">
     <div class="wrap">
       <a class="back" href="creators/"><svg class="i"><use href="#i-left"/></svg> 크리에이터 목록</a>

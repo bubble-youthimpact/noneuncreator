@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" class="hdr-top">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script>try{var t=localStorage.getItem('nc-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>try{var r=document.documentElement,t=localStorage.getItem('nc-theme'),f=localStorage.getItem('nc-fs');if(t==='dark'||t==='light')r.setAttribute('data-theme',t);if(f==='1'||f==='2')r.classList.add('fs-'+f)}catch(e){}</script>
 <base href="../../">
 <title>시니어크리에이터TV · 노는창작자</title>
 <meta name="description" content="“시니어 인생을 디자인하다” 시니어크리에이터TV는 단순한 유튜브 채널이 아닙니다. 풍요롭고 행복한 노년을 향한 새로운 무대를 만들어가는 시니어 문화의 대표 크리에이터입니다. 문화·예술이라는 무대 위에서, 나이는 더 이상 한계가 아닌 가장 강력한 스토리가 됩니다. 시니어크리에이…">
@@ -129,7 +129,7 @@
 <main id="main" tabindex="-1">
 
 <!-- HOME -->
-<div class="page" data-page="home" data-title="노는창작자 Noneun Creator">
+<div class="page" data-page="home" data-title="노는창작자 Noneun Creator" hidden>
   <section class="hero">
     <div class="wrap hero-inner">
       <img class="hero-faces" src="images/logo-faces-white.webp" alt="" width="446" height="313">
@@ -323,7 +323,7 @@
         <p class="form-status" role="status" hidden></p>
       </form></div></section>
 </div>
-<div class="page" data-page="creator" hidden>
+<div class="page" data-page="creator">
   <section class="profile-head">
     <div class="wrap">
       <a class="back" href="creators/"><svg class="i"><use href="#i-left"/></svg> 크리에이터 목록</a>
