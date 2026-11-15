@@ -9,6 +9,38 @@
   const CROSS = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg>';
   const shake = el => { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); };
 
+  /* After an answer, scroll so the question, choices and feedback sit in the middle of the screen
+     with equal space above and below. If they don't all fit, keep the question just under the header. */
+  const fit = (root, fresh) => {
+    const run = () => {
+      const card = root.querySelector('.g-card, .g-result') || root;
+      const vis = [...card.querySelectorAll('.g-actions, .g-msg, .g-fact')].filter(e => !e.hidden && e.offsetHeight);
+      const end = (vis.length ? vis[vis.length - 1] : card).getBoundingClientRect().bottom;
+      const hd = document.querySelector('.site-header');
+      const top = hd ? Math.max(0, hd.getBoundingClientRect().bottom) : 0;
+      const room = window.innerHeight - top;
+      // try, in order: the whole card · picture → feedback · question → feedback
+      const c = card.getBoundingClientRect();
+      const spans = [[c.top, c.bottom, 24]];
+      if (fresh) { const d0 = c.bottom - c.top <= room - 24 ? c.top - (top + (room - (c.bottom - c.top)) / 2) : c.top - (top + 12); if (Math.abs(d0) >= 8) window.scrollBy({ top: d0, behavior: 'smooth' }); return; }
+      for (const sel of ['.g-art, .g-pic, .mem, .ws', '.g-q, .g-word']) {
+        const el = card.querySelector(sel); if (el) spans.push([el.getBoundingClientRect().top - 12, end + 12, 0]);
+      }
+      const fitSpan = spans.find(([a, z, pad]) => z - a <= room - pad);
+      let d;
+      if (fitSpan) d = fitSpan[0] - (top + (room - (fitSpan[1] - fitSpan[0])) / 2);   // equal space above and below
+      else d = spans[spans.length - 1][0] - top;                                          // too tall: question just under the header
+      if (Math.abs(d) < 8) return;
+      const smooth = !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+      window.scrollBy({ top: d, behavior: smooth ? 'smooth' : 'auto' });
+    };
+    requestAnimationFrame(() => {
+      const img = root.querySelector('.g-art img, .g-pic');
+      if (img && !img.complete) { let ran = false; const go = () => { if (!ran) { ran = true; run(); } }; img.addEventListener('load', go, { once: true }); img.addEventListener('error', go, { once: true }); setTimeout(go, 1200); }
+      else run();
+    });
+  };
+
   /* ---------------- content ---------------- */
   const IDIOMS = [
       { word: "일석이조", hanja: "一石二鳥", meaning: "돌 한 개를 던져 두 마리의 새를 맞춘다는 뜻으로, 한 가지 일로 두 가지 이익을 얻음을 이르는 말.", chosung: "ㅇ ㅅ ㅇ ㅈ", distractors: ["삼", "사", "물", "산"] },
@@ -505,7 +537,7 @@
       root.querySelectorAll('.g-opt').forEach(b => b.addEventListener('click', () => pick(+b.dataset.k, b)));
       const hb = root.querySelector('[data-hint]');
       if (hb) hb.addEventListener('click', () => { const h = root.querySelector('.g-hint'); h.textContent = '💡 ' + q.hint; h.hidden = false; hb.disabled = true; });
-      root.querySelector('[data-next]').addEventListener('click', () => { i++; i < qs.length ? show() : finish(); });
+      root.querySelector('[data-next]').addEventListener('click', () => { i++; i < qs.length ? show() : finish(); fit(root, true); });
     };
     const pick = (k, btn) => {
       if (answered) return;
@@ -518,7 +550,7 @@
       } else if (cfg.retry) {
         btn.classList.add('bad'); btn.disabled = true; btn.querySelector('.mk').innerHTML = CROSS; shake(btn);
         msg.className = 'g-msg bad'; msg.textContent = T('다시 한번 생각해 보세요.', 'Not quite. Try again.');
-        return;
+        fit(root); return;
       } else {
         answered = true;
         btn.classList.add('bad'); btn.querySelector('.mk').innerHTML = CROSS;
@@ -529,6 +561,7 @@
       if (q.fact) { const f = root.querySelector('.g-fact'); f.innerHTML = `<b>${k === q.answer ? T('정답이에요! ', 'Correct! ') : T('알고 계셨나요? ', 'Did you know? ')}</b>${esc(q.fact)}`; f.hidden = false; msg.textContent = ''; }
       const hb = root.querySelector('[data-hint]'); if (hb) hb.hidden = true;
       const nx = root.querySelector('[data-next]'); nx.hidden = false; nx.focus({ preventScroll: true });
+      fit(root);
     };
     const finish = () => {
       const pct = score / qs.length, r = cfg.ranks ? rankOf(pct, cfg.ranks) : null;
@@ -556,7 +589,7 @@
       root.querySelector('[data-erase]').addEventListener('click', () => { if (done || !input.length) return; input.pop(); paint(); root.querySelector('.g-msg').textContent = ''; });
       const hb = root.querySelector('[data-hint]');
       if (hb) hb.addEventListener('click', () => { const h = root.querySelector('.g-hint'); h.textContent = q.hint; h.hidden = false; hb.disabled = true; });
-      root.querySelector('[data-next]').addEventListener('click', () => { i++; i < qs.length ? show() : result(root, { score: cfg.points ? score * 10 : score, total: qs.length, unit: cfg.points ? 'pts' : '', onRestart: start }); });
+      root.querySelector('[data-next]').addEventListener('click', () => { i++; (i < qs.length ? show() : result(root, { score: cfg.points ? score * 10 : score, total: qs.length, unit: cfg.points ? 'pts' : '', onRestart: start })); fit(root, true); });
     };
     const paint = () => {
       const q = qs[i];
@@ -574,9 +607,11 @@
         msg.className = 'g-msg ok'; msg.textContent = T('정답입니다!', 'Correct!');
         root.querySelector('[data-erase]').hidden = true; const hb = root.querySelector('[data-hint]'); if (hb) hb.hidden = true;
         const nx = root.querySelector('[data-next]'); nx.hidden = false; nx.focus({ preventScroll: true });
+        fit(root);
       } else {
         slots.forEach(s => { s.classList.add('bad'); shake(s); });
         msg.className = 'g-msg bad'; msg.textContent = T('다시 한번 생각해 보세요.', 'Not quite. Try again.');
+        fit(root);
         setTimeout(() => { input = []; slots.forEach(s => s.classList.remove('bad')); paint(); }, 600);
       }
     };
@@ -598,10 +633,10 @@
           <div class="g-actions"><button class="btn btn-ghost" type="button" data-hint>${T('첫 글자 힌트', 'First-letter hint')}</button><button class="btn btn-ghost" type="button" data-skip>${T('정답 보기', 'Show answer')}</button><button class="btn btn-primary" type="submit">${T('확인', 'Check')}</button></div>
         </form></div>`;
       const f = root.querySelector('form'), inp = f.querySelector('input'), msg = f.querySelector('.g-msg');
-      const next = () => { i++; i < qs.length ? show() : result(root, { score, total: qs.length, onRestart: start }); };
+      const next = () => { i++; i < qs.length ? show() : result(root, { score, total: qs.length, onRestart: start }); fit(root, true); };
       const solved = (ok) => {
         f.querySelector('.g-actions').innerHTML = `<button class="btn btn-primary" type="button" data-next>${i === qs.length - 1 ? T('결과 보기', 'See results') : T('다음 문제', 'Next question')}</button>`;
-        f.querySelector('[data-next]').addEventListener('click', next); f.querySelector('[data-next]').focus();
+        f.querySelector('[data-next]').addEventListener('click', next); f.querySelector('[data-next]').focus({ preventScroll: true }); fit(root);
         inp.disabled = true; msg.className = 'g-msg ' + (ok ? 'ok' : '');
         msg.textContent = ok ? T('정답입니다!', 'Correct!') : T(`정답은 "${q.ko}" (${q.en}) 입니다.`, `The answer is "${q.en}" (${q.ko}).`);
       };
