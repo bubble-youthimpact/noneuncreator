@@ -720,18 +720,23 @@
   const imgCache = {};
   function tryImg(src) { return new Promise(res => { const im = new Image(); const t = setTimeout(() => res(false), 9000); im.onload = () => { clearTimeout(t); res(im.naturalWidth > 0); }; im.onerror = () => { clearTimeout(t); res(false); }; im.src = src; }); }
   async function firstOk(list) { for (const x of list) if (await tryImg(x.src)) return x; return null; }
+  // Wikipedia articles whose main picture is not the artwork itself (a live bird, a whole building)
+  const WIKI_SKIP = new Set(['Red-crowned_crane', 'Hagia_Sophia', 'Sultan_Ahmed_Mosque', 'Korean_pottery_and_porcelain']);
   async function wikiList(titles) {
-    if (!titles || !titles.length) return [];
-    try {
-      const r = await fetch('https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=800&titles=' + encodeURIComponent(titles.join('|')));
-      const d = await r.json(), out = [];
-      Object.values((d.query && d.query.pages) || {}).forEach(p => { if (p.thumbnail) out.push({ src: p.thumbnail.source, credit: 'Wikipedia – ' + p.title, url: 'https://en.wikipedia.org/wiki/' + encodeURIComponent(p.title.replace(/ /g, '_')) }); });
-      return out;
-    } catch (e) { return []; }
+    // try each article in the order given and use the first one that has a main picture
+    for (const t of (titles || []).filter(x => !WIKI_SKIP.has(x))) {
+      try {
+        const r = await fetch('https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=1000&titles=' + encodeURIComponent(t));
+        const d = await r.json();
+        const p = Object.values((d.query && d.query.pages) || {}).find(x => x.thumbnail);
+        if (p) return [{ src: p.thumbnail.source, credit: 'Wikipedia – ' + p.title, url: 'https://en.wikipedia.org/wiki/' + encodeURIComponent(p.title.replace(/ /g, '_')) }];
+      } catch (e) { /* try the next article */ }
+    }
+    return [];
   }
   function artImage(q, frame, credit, still) {
     if (!imgCache[q.artwork]) {
-      const direct = [...(q.image ? [{ src: q.image }] : []), ...(q.files || []).map(f => ({ src: 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(f) + '?width=800', credit: 'Wikimedia Commons', url: 'https://commons.wikimedia.org/wiki/File:' + encodeURIComponent(f) }))];
+      const direct = [...(q.image ? [{ src: q.image }] : []), ...(q.files || []).map(f => ({ src: 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(f) + '?width=1000', credit: 'Wikimedia Commons', url: 'https://commons.wikimedia.org/wiki/File:' + encodeURIComponent(f) }))];
       imgCache[q.artwork] = firstOk(direct).then(x => x || wikiList(q.wiki).then(firstOk));
     }
     imgCache[q.artwork].then(info => {
